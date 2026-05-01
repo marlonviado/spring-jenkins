@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-jenkins-app
+spec:
+  selector:
+    matchLabels:
+      app: spring-jenkins-app
+  template:
+    metadata:
+      labels:
+        app: spring-jenkins-app
+    spec:
+      containers:
+      - name: spring-jenkins-app
+        image: mfviado/spring-jenkins:1.0
+        imagePullPolicy: IfNotPresent
+        resources:   
+          limits: 
+            memory: "512Mi"
+            cpu: "0.6"                                 
+          requests:
+            memory: "256Mi"
+            cpu: "0.5"       
+        ports:
+        - containerPort: 8181
+          protocol: TCP
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: spring-jenkins-svc
+spec:
+  selector:
+    app: spring-jenkins-app
+  ports:
+  - port: 8080
+    protocol: TCP  
+    targetPort: 8181
+  type: NodePort
+
